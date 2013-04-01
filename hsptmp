@@ -181,6 +181,7 @@ else {
 	;駅に到着
 	pos 0,0
 	mes "駅員「ドコヘ　イキマス？」"
+	if my_money >= 1 : my_money = my_money - 1
 	button "ロンドン",*GO_LONDON
 	button "バーミンガム",*GO_BIRMINGHAM
 	button "グラスゴー",*GO_GLASGOW
@@ -432,7 +433,12 @@ if map_id = 3 :mes "場所：グラスゴー"
 if map_id = 4 :mes "場所：リバプール"
 if map_id = 5 :mes "場所：エジンバラ"
 pos 320,40
-mes "お金："+my_money+"ペンス"
+if my_money <= 1 {
+	mes "お金："+my_money+"ペニー"
+}
+else {
+	mes "お金："+my_money+"ペンス"
+}
 ;イベントフラグの表示
 color 255,255,0
 if event_flag(0) = 1 {
@@ -548,7 +554,7 @@ if map_id = 5 {
 }
 redraw 1
 
-my_money = my_money + 10	;無意味に10ペンスもらえるwwwwww
+my_money = my_money + 1	;無意味に1ペニーもらえるwwwwww
 
 ;「フムフム…ナルホド！」ボタン表示
 pos 360,480-80
