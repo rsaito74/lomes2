@@ -1,0 +1,786 @@
+;***** シャーホック・ロームズ2伯爵令嬢連続事件 *****
+randomize
+
+mas_size = 64
+zun_x = 0
+zun_y = 2
+map_id = 1			;マップ番号
+game_turn = 1		;ターン
+my_money = 0		;所持金
+game_over_flag = 0
+
+dim enemy_x,10 
+dim enemy_y,10 
+gosub *ENEMY_INIT	;敵座標の初期化(-1)
+
+dim event_flag,5			;イベントフラグ（0～4）
+
+dim resident_x,5
+dim resident_y,5
+dim resident_id,5
+gosub *RESIDENT_INIT	;住人の初期化(-1)
+
+dim map_data,10,5		;マップデータ（住人の配置、駅の配置）
+
+station_x = 0
+station_y = 0
+station_now_flag = 0	;今駅にいるよフラグ
+
+title "シャーホック・ロームズ２伯爵令状連続事件 Ver.0.49"
+
+celload "mapbg.jpg",1
+celload "zunko_unit.bmp",2
+celload "enemy.bmp",3
+;celload "station.jpg",4		;駅の看板
+celload "resident1.bmp",5		;街の人1（オレンジショート女性）
+celload "resident2.bmp",6		;街の人2（紫髪女性）
+celload "resident3.bmp",7		;街の人3（黒髪女性）
+celload "resident4.bmp",8		;街の人4（猫耳女性）
+;会話画像(21～)
+celload "talk_map1_21.jpg",21		;ロンドン・女性
+celload "talk_map2_22.jpg",22		;バーミンガム・女性
+celload "talk_map3_23.jpg",23		;グラスゴー・女性
+celload "talk_map3_24.jpg",24		;グラスゴー・女性
+celload "talk_map4_25.jpg",25		;リバプール・女性
+celload "talk_map4_26.jpg",26		;リバプール・女性
+celload "talk_map5_27.jpg",27		;エジンバラ・女性
+celload "talk_map5_28.jpg",28		;エジンバラ・女性
+celload "talk_map2_29.jpg",29		;バーミンガム・女性
+;イベント画面(31～)
+celload "event_map2_31.jpg",31		;バーミンガム・１番の鍵
+celload "event_map3_32.jpg",32		;グラスゴー・銀時計
+celload "event_map4_33.jpg",33		;リバプール・ルビー
+celload "event_map5_34.jpg",34		;エジンバラ・黒い手帳
+celload "event_map1_35.jpg",35		;ロンドン・エンディング
+celload "event_preend_36.jpg",36	;エンディング予告
+;タイトル画面(41)
+celload "title.jpg",41
+;都市背景（51～）
+celload "bg_london_51.jpg",51			;ロンドン背景
+celload "bg_birmingham_52.jpg",52		;バーミンガム背景
+celload "bg_glasgow_53.jpg",53			;グラスゴー背景
+celload "bg_liverpool_54.jpg",54		;リバプール背景
+celload "bg_edinburgh_55.jpg",55		;エジンバラ背景
+;駅の看板（61）
+celload "station.jpg",61		;駅の看板
+
+;BGMの読み込み
+mmload "tamau01.mid",1,1		;ロンドン
+mmload "tam-n03.mid",2,1		;バーミンガム
+mmload "tam-g08.mid",3,1		;グラスゴー
+mmload "tamsu06.mid",4,1		;リバプール
+mmload "tamsu08.mid",5,1		;エジンバラ
+
+;***** タイトル画面 *****
+
+pos 0,0
+celput 41
+
+pos 570,430
+button "START",*GAME_MAIN
+
+stop
+
+;***** ゲーム本編 *****
+*GAME_MAIN
+cls 4
+
+;マップの初期化
+gosub *MAP_INIT
+
+*ZUNKO_PUT
+
+redraw 0
+
+color 0,0,0
+boxf
+
+;マップ情報表示更新
+gosub *SET_MAP_INFO
+
+;マップ背景＆駅の表示
+gosub *BG_PUT
+
+;キャラ表示更新
+gmode 7,64,64,255
+celdiv 2,64,64
+pos zun_x*64,zun_y*64+160
+celput 2
+
+;敵の配置
+gosub *ENEMY_PUT
+;街の人の配置
+gosub *RESIDENT_PUT
+
+gmode
+redraw 1
+
+;敵の接触（ゲームオーバー）チェック
+gosub *CHECK_ENEMY_TOUCH
+if game_over_flag=1 : goto *GAME_OVER
+
+;街の人の接触チェック（会話）
+;goto *CHECK_RESIDENT_TOUCH
+if map_data(zun_x,zun_y) = 1 : goto *RESIDENT_TOUCH
+
+;イベントチェック
+if map_data(zun_x,zun_y) = 3 : goto *EVENT_TOUCH
+;エンディングイベントチェック
+if event_flag(4) = 1 {
+	if map_data(zun_x,zun_y) = 4 : goto *ENDING_EVENT
+}
+
+;駅到着チェック
+gosub *CHECK_STATION_NOW
+
+;ずん子移動用ボタン表示
+*ZUNKO_MOVE
+
+if (station_now_flag = 0) {
+	;東移動ボタン
+	pos 100,30
+	button "→",*ZUNKO_MOVE_EAST
+	if zun_x >= 9 {
+		objenable stat,0
+	}
+	else {
+		objenable stat,1
+	}
+	
+	;西移動ボタン
+	pos 0,30
+	button "←",*ZUNKO_MOVE_WEST
+	if zun_x = 0 {
+		objenable stat,0
+	}
+	else {
+		objenable stat,1
+	}
+	
+	;北移動ボタン
+	pos 50,0
+	button "↑",*ZUNKO_MOVE_NORTH
+	if zun_y = 0 {
+		objenable stat,0
+	}
+	else {
+		objenable stat,1
+	}
+	
+	;南移動ボタン
+	pos 50,60
+	button "↓",*ZUNKO_MOVE_SOUTH
+	if zun_y >= 4 {
+		objenable stat,0
+	}
+	else {
+		objenable stat,1
+	}
+}
+else {
+	;駅に到着
+	pos 0,0
+	mes "駅員「ドコヘ　イキマス？」"
+	button "ロンドン",*GO_LONDON
+	button "バーミンガム",*GO_BIRMINGHAM
+	button "グラスゴー",*GO_GLASGOW
+	button "リバプール",*GO_LIVERPOOL
+	button "エジンバラ",*GO_EDINBURGH
+}
+
+stop
+;-------------------------------------------------
+;以下、サブルーチン
+;-------------------------------------------------
+
+;***** 敵の初期化 *****
+*ENEMY_INIT
+
+for i,0,10		;0から9まで10回ループ
+	enemy_x(i) = -1
+	enemy_y(i) = -1
+next
+
+return
+
+;***** 街の人の初期化 *****
+*RESIDENT_INIT
+
+for i,0,5		;0から4まで5回ループ
+	resident_x(i) = -1
+	resident_y(i) = -1
+	resident_id(i) = -1
+next
+
+return
+
+;***** 街データの初期化 *****
+*MAP_DATA_INIT
+
+for i,0,10		;0から9まで10回ループ	
+	for j,0,5		;0から4まで5回ループ
+		map_data(i,j) = 0
+	next
+next
+
+return
+
+;***** マップの初期化 *****
+*MAP_INIT
+;BGM再生	
+mmplay map_id
+	
+;ロンドン
+if map_id = 1 {
+	zun_x = 0
+	zun_y = 2
+	;enemy(0)=(9,2)
+	enemy_x(0) = 9
+	enemy_y(0) = 2
+	;resident(0)=(5,1)
+	resident_x(0) = 5
+	resident_y(0) = 1
+	resident_id(0) = 5			;街の人1（オレンジショート女性）
+	;マップに住人情報をセット
+	map_data(5,1) = 1
+	;駅の位置
+	station_x = 9
+	station_y = 0
+	;マップに駅情報をセット
+	map_data(9,0) = 2
+	;マップにエンディングイベント情報をセット
+	map_data(0,2) = 4
+}
+;バーミンガム
+if map_id = 2 {
+	zun_x = 0
+	zun_y = 0
+	;enemy(0)=(9,4)
+	enemy_x(0) = 9
+	enemy_y(0) = 4
+	;enemy(1)=(7,0)
+	enemy_x(1) = 0
+	enemy_y(1) = 4
+	;resident(0)=(5,3)
+	resident_x(0) = 5
+	resident_y(0) = 3
+	resident_id(0) = 5			;街の人1（オレンジショート女性）
+	;resident(1)=(3,4)
+	resident_x(1) = 3
+	resident_y(1) = 4
+	resident_id(1) = 7			;街の人3（黒髪女性）
+	;マップに住人情報をセット
+	map_data(5,3) = 1
+	map_data(3,4) = 1
+	;駅の位置
+	station_x = 9
+	station_y = 0
+	;マップに駅情報をセット
+	map_data(9,0) = 2
+	;マップにイベント情報をセット
+	map_data(0,4) = 3
+}
+;グラスゴー
+if map_id = 3 {
+	zun_x = 0
+	zun_y = 4
+	;enemy(0)=(8,0)
+	enemy_x(0) = 8
+	enemy_y(0) = 0
+	;enemy(1)=(4,2)
+	enemy_x(1) = 4
+	enemy_y(1) = 2
+	;resident(0)=(5,1)
+	resident_x(0) = 5
+	resident_y(0) = 1
+	resident_id(0) = 5			;街の人1（オレンジショート女性）
+	;resident(1)=(6,4)
+	resident_x(1) = 6
+	resident_y(1) = 4
+	resident_id(1) = 6			;街の人2（女性）
+	;マップに住人情報をセット
+	map_data(5,1) = 1
+	map_data(6,4) = 1
+	;駅の位置
+	station_x = 9
+	station_y = 0
+	;マップに駅情報をセット
+	map_data(9,0) = 2
+	;マップにイベント情報をセット
+	;駅から西へ9歩、南へE歩、MをWにせよ（グラスゴーのパパイヤ団は数字を半回転させる暗号を使うらしい）
+	map_data(3,3) = 3
+}
+;リバプール
+if map_id = 4 {
+	zun_x = 1
+	zun_y = 0
+	;enemy(0)=(9,1)
+	enemy_x(0) = 9
+	enemy_y(0) = 1
+	;enemy(1)=(7,4)
+	enemy_x(1) = 7
+	enemy_y(1) = 4
+	;resident(0)=(0,4)
+	resident_x(0) = 0
+	resident_y(0) = 4
+	resident_id(0) = 5			;街の人1（オレンジショート女性）
+	;resident(1)=(8,3)
+	resident_x(1) = 8
+	resident_y(1) = 3
+	resident_id(1) = 6			;街の人2（紫髪女性）
+	;マップに住人情報をセット
+	map_data(0,4) = 1
+	map_data(8,3) = 1
+	;駅の位置
+	station_x = 9
+	station_y = 0
+	;マップに駅情報をセット
+	map_data(9,0) = 2
+	;マップにイベント情報をセット
+	;北西端に立ち東へD進みB戻る(2)、南へB進み7戻る(4)（リバプールのパパイヤ団は0からFの暗号を使うらしい）
+	map_data(2,4) = 3
+}
+;エジンバラ
+if map_id = 5 {
+	zun_x = 0
+	zun_y = 2
+	;enemy(0)=(1,4)
+	enemy_x(0) = 1
+	enemy_y(0) = 4
+	;enemy(1)=(8,0)
+	enemy_x(1) = 8
+	enemy_y(1) = 0
+	;enemy(2)=(6,3)
+	enemy_x(2) = 6
+	enemy_y(2) = 3
+	;resident(0)=(4,1)
+	resident_x(0) = 4
+	resident_y(0) = 1
+	resident_id(0) = 7			;街の人3（黒髪女性）
+	;resident(1)=(9,3)
+	resident_x(1) = 9
+	resident_y(1) = 3
+	resident_id(1) = 8			;街の人4（猫耳女性）
+	;マップに住人情報をセット
+	map_data(4,1) = 1
+	map_data(9,3) = 1
+	;駅の位置
+	station_x = 9
+	station_y = 0
+	;マップに駅情報をセット
+	map_data(9,0) = 2
+	;マップにイベント情報をセット
+	;パパイヤ団の秘密を握る決定的な証拠をどこかに落としたらしいです！パパイヤ団から聞きました！
+	map_data(9,4) = 3
+}
+
+return
+
+;***** マップ背景＆駅の表示 *****
+*BG_PUT
+
+;マップ背景表示
+pos 0,160
+celput 1
+
+;都市背景表示
+pos 0,480-320-64
+celput (map_id+50)
+
+;駅表示
+pos station_x*64,station_y*64+160-64
+celput 61
+
+return
+
+;***** 敵の設置 *****
+*ENEMY_PUT
+
+for i,0,10		;0から9まで10回ループ
+	if 	enemy_x(i) >= 0 {
+		pos enemy_x(i)*64,enemy_y(i)*64+160
+		celdiv 3,64,64
+		celput 3
+	}
+next
+
+return
+
+;***** 街の人の設置 *****
+*RESIDENT_PUT
+
+for i,0,5		;0から4まで5回ループ
+	if 	resident_x(i) >= 0 {
+		pos resident_x(i)*64,resident_y(i)*64+160
+		celdiv resident_id(i),64,64
+		celput resident_id(i)
+	}
+next
+
+return
+
+;***** マップ情報の表示 *****
+*SET_MAP_INFO
+
+color 0,255,0
+pos 320,0
+mes "推理："+game_turn+"日目"
+pos 320,20
+if map_id = 1 :mes "場所：ロンドン"
+if map_id = 2 :mes "場所：バーミンガム"
+if map_id = 3 :mes "場所：グラスゴー"
+if map_id = 4 :mes "場所：リバプール"
+if map_id = 5 :mes "場所：エジンバラ"
+pos 320,40
+mes "お金："+my_money+"ペンス"
+;イベントフラグの表示
+color 255,255,0
+if event_flag(0) = 1 {
+	pos 320,60
+	mes "１の鍵"
+}
+if event_flag(1) = 1 {
+	pos 380,60
+	mes "銀時計"
+}
+if event_flag(2) = 1 {
+	pos 440,60
+	mes "ルビー"
+}
+if event_flag(3) = 1 {
+	pos 500,60
+	mes "黒手帳"
+}
+
+return
+
+;***** ずん子の座標を東に+1 *****
+*ZUNKO_MOVE_EAST
+clrobj
+zun_x++
+goto *ENEMY_TURN
+
+;***** ずん子の座標を西に+1 *****
+*ZUNKO_MOVE_WEST
+clrobj
+zun_x--
+goto *ENEMY_TURN
+
+;***** ずん子の座標を北に+1 *****
+*ZUNKO_MOVE_NORTH
+clrobj
+zun_y--
+goto *ENEMY_TURN
+
+;***** ずん子の座標を南に+1 *****
+*ZUNKO_MOVE_SOUTH
+clrobj
+zun_y++
+goto *ENEMY_TURN
+
+;***** 敵の処理 *****
+*ENEMY_TURN
+
+for i,0,10		;0から9まで10回ループ
+	if 	enemy_x(i) >= 0 {
+		;乱数で敵の座標を移動
+		r = rnd(4)				;0～3の乱数
+		if (r=0)&(enemy_y(i)>0) {
+			;北に移動
+			enemy_y(i)--
+		}
+		if (r=1)&(enemy_x(i)<9) {
+			;東に移動
+			enemy_x(i)++
+		}
+		if (r=2)&(enemy_y(i)<4) {
+			;南に移動
+			enemy_y(i)++
+		}
+		if (r=3)&(enemy_x(i)>0) {
+			;西に移動
+			enemy_x(i)--
+		}
+	}
+next
+
+goto *NEXT_TURN
+
+;***** ターン更新処理 *****
+*NEXT_TURN
+
+game_turn++
+
+goto *ZUNKO_PUT
+
+;***** 街の人の接触（会話） *****
+*RESIDENT_TOUCH
+mmstop		;BGM停止
+clrobj
+redraw 0
+cls 4
+color 0,0,0
+boxf
+pos 0,80	
+;ロンドンの会話
+if map_id = 1 {
+	if (zun_x=resident_x(0))&(zun_y=resident_y(0)) : celput 21
+}
+;バーミンガムの会話
+if map_id = 2 {
+	if (zun_x=resident_x(0))&(zun_y=resident_y(0)) : celput 22
+	if (zun_x=resident_x(1))&(zun_y=resident_y(1)) : celput 29
+}
+;グラスゴーの会話
+if map_id = 3 {
+	if (zun_x=resident_x(0))&(zun_y=resident_y(0)) : celput 23
+	if (zun_x=resident_x(1))&(zun_y=resident_y(1)) : celput 24
+}
+;リバプールの会話
+if map_id = 4 {
+	if (zun_x=resident_x(0))&(zun_y=resident_y(0)) : celput 25
+	if (zun_x=resident_x(1))&(zun_y=resident_y(1)) : celput 26
+}
+;エジンバラの会話
+if map_id = 5 {
+	if (zun_x=resident_x(0))&(zun_y=resident_y(0)) : celput 27
+	if (zun_x=resident_x(1))&(zun_y=resident_y(1)) : celput 28
+}
+redraw 1
+
+my_money = my_money + 10	;無意味に10ペンスもらえるwwwwww
+
+;「フムフム…ナルホド！」ボタン表示
+pos 360,480-80
+objsize 128,24
+button "フムフム…ナルホド！",*END_TALK_RESIDENT
+
+stop
+
+;***** 街の人との会話終了 *****
+*END_TALK_RESIDENT
+clrobj
+cls 4
+mmplay map_id	;BGM再開
+
+redraw 0
+color 0,0,0
+boxf
+
+;マップ情報表示更新
+gosub *SET_MAP_INFO
+
+;マップ背景＆駅の表示
+gosub *BG_PUT
+
+;キャラ表示更新
+gmode 7,64,64,255
+celdiv 2,64,64
+pos zun_x*64,zun_y*64+160
+celput 2
+
+;敵の配置
+gosub *ENEMY_PUT
+;街の人の配置
+gosub *RESIDENT_PUT
+
+gmode
+redraw 1
+
+goto *ZUNKO_MOVE
+
+;***** イベント接触（おもにアイテムゲット） *****
+*EVENT_TOUCH
+mmstop		;BGM停止
+clrobj
+redraw 0
+cls 4
+color 0,0,0
+boxf
+pos 0,80	
+;バーミンガムのイベント
+if map_id = 2 {
+	;if (zun_x=0)&(zun_y=4) {	;１番の鍵をゲット！
+	if map_data(zun_x,zun_y) = 3 {
+		celput 31
+		event_flag(0) = 1
+	}
+}
+;グラスゴーのイベント
+if map_id = 3 {
+	;if (zun_x=3)&(zun_y=3) {	;１番の鍵をゲット！
+	if map_data(zun_x,zun_y) = 3 {
+		celput 32
+		event_flag(1) = 1
+	}
+}
+;リバプールのイベント
+if map_id = 4 {
+	if map_data(zun_x,zun_y) = 3 {
+		celput 33
+		event_flag(2) = 1
+	}
+}
+;エジンバラのイベント
+if map_id = 5 {
+	if map_data(zun_x,zun_y) = 3 {
+		celput 34
+		event_flag(3) = 1
+	}
+}
+redraw 1
+
+;イベントフラグが全部立ったらエンディング予告へ
+if (event_flag(0)=1)&(event_flag(1)=1)&(event_flag(2)=1)&(event_flag(3)=1) {
+	event_flag(4) = 1	;エンディングフラグ
+}	
+
+;「フムフム…ナルホド！」ボタン表示
+pos 360,480-80
+objsize 128,24
+if event_flag(4) = 1 {
+	button "フムフム…ナルホド！",*PRE_ENDING
+}
+else {
+	button "フムフム…ナルホド！",*END_TALK_RESIDENT
+}
+
+stop
+
+;***** エンディング予告イベント *****
+*PRE_ENDING
+
+clrobj
+redraw 0
+cls 4
+color 0,0,0
+boxf
+pos 0,80	
+celput 36
+redraw 1
+
+pos 360,480-80
+objsize 128,24
+button "フムフム…ナルホド！",*END_TALK_RESIDENT
+
+stop
+
+;***** エンディングイベント *****
+*ENDING_EVENT
+
+celput 35
+
+stop
+
+;***** 駅到着チェック *****
+*CHECK_STATION_NOW
+
+if map_data(zun_x,zun_y) = 2 : station_now_flag = 1
+
+return
+
+;***** ロンドンへ移動 *****
+*GO_LONDON
+
+clrobj
+map_id = 1
+game_turn++
+station_now_flag = 0
+
+gosub *ENEMY_INIT		;敵座標の初期化(-1)
+gosub *RESIDENT_INIT	;住人の初期化(-1)
+gosub *MAP_DATA_INIT	;マップデータ初期化
+gosub *MAP_INIT			;ロンドンマップの初期化
+
+goto *ZUNKO_PUT
+
+;***** バーミンガムへ移動 *****
+*GO_BIRMINGHAM
+
+clrobj
+map_id = 2
+game_turn++
+station_now_flag = 0
+
+gosub *ENEMY_INIT		;敵座標の初期化(-1)
+gosub *RESIDENT_INIT	;住人の初期化(-1)
+gosub *MAP_DATA_INIT	;マップデータ初期化
+gosub *MAP_INIT			;ロバーミンガムマップの初期化
+
+goto *ZUNKO_PUT
+
+;***** グラスゴーへ移動 *****
+*GO_GLASGOW
+
+clrobj
+map_id = 3
+game_turn++
+station_now_flag = 0
+
+gosub *ENEMY_INIT		;敵座標の初期化(-1)
+gosub *RESIDENT_INIT	;住人の初期化(-1)
+gosub *MAP_DATA_INIT	;マップデータ初期化
+gosub *MAP_INIT			;グラスゴーマップの初期化
+
+goto *ZUNKO_PUT
+
+;***** リバプールへ移動 *****
+*GO_LIVERPOOL
+
+clrobj
+map_id = 4
+game_turn++
+station_now_flag = 0
+
+gosub *ENEMY_INIT		;敵座標の初期化(-1)
+gosub *RESIDENT_INIT	;住人の初期化(-1)
+gosub *MAP_DATA_INIT	;マップデータ初期化
+gosub *MAP_INIT			;リバプールマップの初期化
+
+goto *ZUNKO_PUT
+
+;***** エジンバラへ移動 *****
+*GO_EDINBURGH
+
+clrobj
+map_id = 5
+game_turn++
+station_now_flag = 0
+
+gosub *ENEMY_INIT		;敵座標の初期化(-1)
+gosub *RESIDENT_INIT	;住人の初期化(-1)
+gosub *MAP_DATA_INIT	;マップデータ初期化
+gosub *MAP_INIT			;リバプールマップの初期化
+
+goto *ZUNKO_PUT
+
+;***** 敵の接触（ゲームオーバー）チェック *****
+*CHECK_ENEMY_TOUCH
+
+for i,0,10		;0から9まで10回ループ
+	if 	enemy_x(i) >= 0 {
+		if (zun_y=enemy_y(i)) {
+			;ずん子と敵のy座標が一緒→x方向の隣接チェック
+			if (zun_x+1)=enemy_x(i) : game_over_flag = 1
+			if (zun_x-1)=enemy_x(i) : game_over_flag = 1
+		}
+		if (zun_x=enemy_x(i)) {
+			;ずん子と敵のx座標が一緒→y方向の隣接チェック
+			if (zun_y+1)=enemy_y(i) : game_over_flag = 1
+			if (zun_y-1)=enemy_y(i) : game_over_flag = 1
+		}
+	}
+next
+
+return
+
+;***** 敵の接触（ゲームオーバー） *****
+*GAME_OVER
+
+clrobj
+font "ＭＳ ゴシック",28,1
+pos 160,220
+color 255,0,0
+mes "***** GAME OVER *****"
+
+stop
