@@ -24,7 +24,7 @@
 #pack "ev_map4_33.jpg"		;リバプール・ルビー
 #pack "ev_map5_34.jpg"		;エジンバラ・黒い手帳
 #pack "ev_map1_35.jpg"		;ロンドン・エンディング
-#pack "ev_preend_36.jpg"		;エンディング予告
+#pack "ev_preed_36.jpg"		;エンディング予告
 ;タイトル画面(41)
 #pack "title.jpg"
 ;都市背景（51～）
@@ -99,7 +99,7 @@ celload "ev_map3_32.jpg",32		;グラスゴー・銀時計
 celload "ev_map4_33.jpg",33		;リバプール・ルビー
 celload "ev_map5_34.jpg",34		;エジンバラ・黒い手帳
 celload "ev_map1_35.jpg",35		;ロンドン・エンディング
-celload "ev_preend_36.jpg",36	;エンディング予告
+celload "ev_preed_36.jpg",36	;エンディング予告
 ;タイトル画面(41)
 celload "title.jpg",41
 ;都市背景（51～）

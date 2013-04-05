@@ -8,38 +8,38 @@
 #pack "resident4.bmp"		;街の人4（猫耳女性）
 #pack "resident5.bmp"		;街の人5（ヴィクトリア）
 ;会話画像(20～)
-#pack "talk_map1_20.jpg"		;ロンドン・女性
-#pack "talk_map1_21.jpg"		;ロンドン・女性
-#pack "talk_map2_22.jpg"		;バーミンガム・女性
-#pack "talk_map3_23.jpg"		;グラスゴー・女性
-#pack "talk_map3_24.jpg"		;グラスゴー・女性
-#pack "talk_map4_25.jpg"		;リバプール・女性
-#pack "talk_map4_26.jpg"		;リバプール・女性
-#pack "talk_map5_27.jpg"		;エジンバラ・女性
-#pack "talk_map5_28.jpg"		;エジンバラ・女性
-#pack "talk_map2_29.jpg"		;バーミンガム・女性
+#pack "tk_map1_20.jpg"		;ロンドン・女性
+#pack "tk_map1_21.jpg"		;ロンドン・女性
+#pack "tk_map2_22.jpg"		;バーミンガム・女性
+#pack "tk_map3_23.jpg"		;グラスゴー・女性
+#pack "tk_map3_24.jpg"		;グラスゴー・女性
+#pack "tk_map4_25.jpg"		;リバプール・女性
+#pack "tk_map4_26.jpg"		;リバプール・女性
+#pack "tk_map5_27.jpg"		;エジンバラ・女性
+#pack "tk_map5_28.jpg"		;エジンバラ・女性
+#pack "tk_map2_29.jpg"		;バーミンガム・女性
 ;イベント画面(31～)
-#pack "event_map2_31.jpg"		;バーミンガム・１番の鍵
-#pack "event_map3_32.jpg"		;グラスゴー・銀時計
-#pack "event_map4_33.jpg"		;リバプール・ルビー
-#pack "event_map5_34.jpg"		;エジンバラ・黒い手帳
-#pack "event_map1_35.jpg"		;ロンドン・エンディング
-#pack "event_preend_36.jpg"		;エンディング予告
+#pack "ev_map2_31.jpg"		;バーミンガム・１番の鍵
+#pack "ev_map3_32.jpg"		;グラスゴー・銀時計
+#pack "ev_map4_33.jpg"		;リバプール・ルビー
+#pack "ev_map5_34.jpg"		;エジンバラ・黒い手帳
+#pack "ev_map1_35.jpg"		;ロンドン・エンディング
+#pack "ev_preed_36.jpg"		;エンディング予告
 ;タイトル画面(41)
 #pack "title.jpg"
 ;都市背景（51～）
-#pack "bg_london_51.jpg"			;ロンドン背景
-#pack "bg_birmingham_52.jpg"		;バーミンガム背景
-#pack "bg_glasgow_53.jpg"			;グラスゴー背景
-#pack "bg_liverpool_54.jpg"		;リバプール背景
-#pack "bg_edinburgh_55.jpg"		;エジンバラ背景
-#pack "bg_sendai_56.jpg"			;センダイ背景
+#pack "bg51lon.jpg"			;ロンドン背景
+#pack "bg52bir.jpg"		;バーミンガム背景
+#pack "bg53gla.jpg"			;グラスゴー背景
+#pack "bg54liv.jpg"		;リバプール背景
+#pack "bg55edi.jpg"		;エジンバラ背景
+#pack "bg56sen.jpg"			;センダイ背景
 ;駅の看板（61）
 #pack "station.jpg"		;駅の看板
 ;追加会話画像(71～)仙台
-#pack "talk_map6_71.jpg"		;仙台・女性
-#pack "talk_map6_72.jpg"		;仙台・女性
-#pack "talk_map6_73.jpg"		;仙台・女性
+#pack "tk_map6_71.jpg"		;仙台・女性
+#pack "tk_map6_72.jpg"		;仙台・女性
+#pack "tk_map6_73.jpg"		;仙台・女性
 #packopt name "lomes2"
 
 randomize
@@ -83,38 +83,38 @@ celload "resident3.bmp",7		;街の人3（黒髪女性）
 celload "resident4.bmp",8		;街の人4（猫耳女性）
 celload "resident5.bmp",9		;街の人5（ヴィクトリア）
 ;会話画像(20～)
-celload "talk_map1_20.jpg",20		;ロンドン・女性
-celload "talk_map1_21.jpg",21		;ロンドン・女性
-celload "talk_map2_22.jpg",22		;バーミンガム・女性
-celload "talk_map3_23.jpg",23		;グラスゴー・女性
-celload "talk_map3_24.jpg",24		;グラスゴー・女性
-celload "talk_map4_25.jpg",25		;リバプール・女性
-celload "talk_map4_26.jpg",26		;リバプール・女性
-celload "talk_map5_27.jpg",27		;エジンバラ・女性
-celload "talk_map5_28.jpg",28		;エジンバラ・女性
-celload "talk_map2_29.jpg",29		;バーミンガム・女性
+celload "tk_map1_20.jpg",20		;ロンドン・女性
+celload "tk_map1_21.jpg",21		;ロンドン・女性
+celload "tk_map2_22.jpg",22		;バーミンガム・女性
+celload "tk_map3_23.jpg",23		;グラスゴー・女性
+celload "tk_map3_24.jpg",24		;グラスゴー・女性
+celload "tk_map4_25.jpg",25		;リバプール・女性
+celload "tk_map4_26.jpg",26		;リバプール・女性
+celload "tk_map5_27.jpg",27		;エジンバラ・女性
+celload "tk_map5_28.jpg",28		;エジンバラ・女性
+celload "tk_map2_29.jpg",29		;バーミンガム・女性
 ;イベント画面(31～)
-celload "event_map2_31.jpg",31		;バーミンガム・１番の鍵
-celload "event_map3_32.jpg",32		;グラスゴー・銀時計
-celload "event_map4_33.jpg",33		;リバプール・ルビー
-celload "event_map5_34.jpg",34		;エジンバラ・黒い手帳
-celload "event_map1_35.jpg",35		;ロンドン・エンディング
-celload "event_preend_36.jpg",36	;エンディング予告
+celload "ev_map2_31.jpg",31		;バーミンガム・１番の鍵
+celload "ev_map3_32.jpg",32		;グラスゴー・銀時計
+celload "ev_map4_33.jpg",33		;リバプール・ルビー
+celload "ev_map5_34.jpg",34		;エジンバラ・黒い手帳
+celload "ev_map1_35.jpg",35		;ロンドン・エンディング
+celload "ev_preed_36.jpg",36	;エンディング予告
 ;タイトル画面(41)
 celload "title.jpg",41
 ;都市背景（51～）
-celload "bg_london_51.jpg",51			;ロンドン背景
-celload "bg_birmingham_52.jpg",52		;バーミンガム背景
-celload "bg_glasgow_53.jpg",53			;グラスゴー背景
-celload "bg_liverpool_54.jpg",54		;リバプール背景
-celload "bg_edinburgh_55.jpg",55		;エジンバラ背景
-celload "bg_sendai_56.jpg",56			;センダイ背景
+celload "bg51lon.jpg",51			;ロンドン背景
+celload "bg52bir.jpg",52		;バーミンガム背景
+celload "bg53gla.jpg",53			;グラスゴー背景
+celload "bg54liv.jpg",54		;リバプール背景
+celload "bg55edi.jpg",55		;エジンバラ背景
+celload "bg56sen.jpg",56			;センダイ背景
 ;駅の看板（61）
 celload "station.jpg",61		;駅の看板
 ;追加会話画像(71～)仙台
-celload "talk_map6_71.jpg",71		;仙台・女性
-celload "talk_map6_72.jpg",72		;仙台・女性
-celload "talk_map6_73.jpg",73		;仙台・女性
+celload "tk_map6_71.jpg",71		;仙台・女性
+celload "tk_map6_72.jpg",72		;仙台・女性
+celload "tk_map6_73.jpg",73		;仙台・女性
 
 ;BGMの読み込み
 mmload "dat\\tamau01.mid",1,1		;ロンドン
