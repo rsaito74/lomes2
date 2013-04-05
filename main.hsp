@@ -26,7 +26,9 @@ station_x = 0
 station_y = 0
 station_now_flag = 0	;今駅にいるよフラグ
 
-title "シャーホック・ロームズ２伯爵令状連続事件 Ver.0.49"
+victoria_enevt_flag = 0		;ヴィクトリアイベントフラグ
+
+title "シャーホック・ロームズ２伯爵令状連続事件 Ver.0.555"
 
 celload "mapbg.jpg",1
 celload "zunko_unit.bmp",2
@@ -36,7 +38,9 @@ celload "resident1.bmp",5		;街の人1（オレンジショート女性）
 celload "resident2.bmp",6		;街の人2（紫髪女性）
 celload "resident3.bmp",7		;街の人3（黒髪女性）
 celload "resident4.bmp",8		;街の人4（猫耳女性）
-;会話画像(21～)
+celload "resident5.bmp",9		;街の人5（ヴィクトリア）
+;会話画像(20～)
+celload "talk_map1_20.jpg",20		;ロンドン・女性
 celload "talk_map1_21.jpg",21		;ロンドン・女性
 celload "talk_map2_22.jpg",22		;バーミンガム・女性
 celload "talk_map3_23.jpg",23		;グラスゴー・女性
@@ -61,8 +65,13 @@ celload "bg_birmingham_52.jpg",52		;バーミンガム背景
 celload "bg_glasgow_53.jpg",53			;グラスゴー背景
 celload "bg_liverpool_54.jpg",54		;リバプール背景
 celload "bg_edinburgh_55.jpg",55		;エジンバラ背景
+celload "bg_sendai_56.jpg",56			;センダイ背景
 ;駅の看板（61）
 celload "station.jpg",61		;駅の看板
+;追加会話画像(71～)仙台
+celload "talk_map6_71.jpg",71		;仙台・女性
+celload "talk_map6_72.jpg",72		;仙台・女性
+celload "talk_map6_73.jpg",73		;仙台・女性
 
 ;BGMの読み込み
 mmload "tamau01.mid",1,1		;ロンドン
@@ -70,6 +79,7 @@ mmload "tam-n03.mid",2,1		;バーミンガム
 mmload "tam-g08.mid",3,1		;グラスゴー
 mmload "tamsu06.mid",4,1		;リバプール
 mmload "tamsu08.mid",5,1		;エジンバラ
+mmload "tam-y08.mid",6,1		;センダイ
 
 ;***** タイトル画面 *****
 
@@ -187,6 +197,7 @@ else {
 	button "グラスゴー",*GO_GLASGOW
 	button "リバプール",*GO_LIVERPOOL
 	button "エジンバラ",*GO_EDINBURGH
+	if game_turn >= 80 : button "センダイ",*GO_SENDAI
 }
 
 stop
@@ -233,8 +244,16 @@ mmplay map_id
 	
 ;ロンドン
 if map_id = 1 {
-	zun_x = 0
-	zun_y = 2
+	if event_flag(4) = 0 {
+		;エンディングフラグOFF
+		zun_x = 0
+		zun_y = 2
+	}
+	else {
+		;エンディングフラグON
+		zun_x = 8
+		zun_y = 0
+	}
 	;enemy(0)=(9,2)
 	enemy_x(0) = 9
 	enemy_y(0) = 2
@@ -242,8 +261,13 @@ if map_id = 1 {
 	resident_x(0) = 5
 	resident_y(0) = 1
 	resident_id(0) = 5			;街の人1（オレンジショート女性）
+	;resident(1)=(2,3)
+	resident_x(1) = 2
+	resident_y(1) = 3
+	resident_id(1) = 8			;街の人4（猫耳女性）
 	;マップに住人情報をセット
 	map_data(5,1) = 1
+	map_data(2,3) = 1
 	;駅の位置
 	station_x = 9
 	station_y = 0
@@ -348,9 +372,9 @@ if map_id = 5 {
 	;enemy(0)=(1,4)
 	enemy_x(0) = 1
 	enemy_y(0) = 4
-	;enemy(1)=(8,0)
-	enemy_x(1) = 8
-	enemy_y(1) = 0
+	;enemy(1)=(8,0)ただし「victoria_enevt_flag=1」なら登場しない
+	if victoria_enevt_flag = 0 : enemy_x(1) = 8
+	if victoria_enevt_flag = 0 : enemy_y(1) = 0
 	;enemy(2)=(6,3)
 	enemy_x(2) = 6
 	enemy_y(2) = 3
@@ -373,6 +397,32 @@ if map_id = 5 {
 	;マップにイベント情報をセット
 	;パパイヤ団の秘密を握る決定的な証拠をどこかに落としたらしいです！パパイヤ団から聞きました！
 	map_data(9,4) = 3
+}
+;センダイ
+if map_id = 6 {
+	zun_x = 0
+	zun_y = 0
+	;resident(0)=(9,4)
+	resident_x(0) = 9
+	resident_y(0) = 4
+	resident_id(0) = 9			;ヴィクトリア
+	;resident(1)=(1,3)
+	resident_x(1) = 1
+	resident_y(1) = 3
+	resident_id(1) = 6		;街の人2（紫髪女性）
+	;resident(2)=(6,1)
+	resident_x(2) = 6
+	resident_y(2) = 1
+	resident_id(2) = 7		;街の人3（黒髪女性）
+	;マップに住人情報をセット
+	map_data(9,4) = 1
+	map_data(1,3) = 1
+	map_data(6,1) = 1
+	;駅の位置
+	station_x = 9
+	station_y = 0
+	;マップに駅情報をセット
+	map_data(9,0) = 2
 }
 
 return
@@ -432,6 +482,7 @@ if map_id = 2 :mes "場所：バーミンガム"
 if map_id = 3 :mes "場所：グラスゴー"
 if map_id = 4 :mes "場所：リバプール"
 if map_id = 5 :mes "場所：エジンバラ"
+if map_id = 6 :mes "場所：センダイ"
 pos 320,40
 if my_money <= 1 {
 	mes "お金："+my_money+"ペニー"
@@ -531,6 +582,7 @@ pos 0,80
 ;ロンドンの会話
 if map_id = 1 {
 	if (zun_x=resident_x(0))&(zun_y=resident_y(0)) : celput 21
+	if (zun_x=resident_x(1))&(zun_y=resident_y(1)) : celput 20
 }
 ;バーミンガムの会話
 if map_id = 2 {
@@ -551,6 +603,12 @@ if map_id = 4 {
 if map_id = 5 {
 	if (zun_x=resident_x(0))&(zun_y=resident_y(0)) : celput 27
 	if (zun_x=resident_x(1))&(zun_y=resident_y(1)) : celput 28
+}
+;センダイの会話
+if map_id = 6 {
+	if (zun_x=resident_x(0))&(zun_y=resident_y(0)) : victoria_enevt_flag = 1 : celput 71	;ヴィクトリア
+	if (zun_x=resident_x(1))&(zun_y=resident_y(1)) : celput 72
+	if (zun_x=resident_x(2))&(zun_y=resident_y(2)) : celput 73
 }
 redraw 1
 
@@ -674,6 +732,7 @@ stop
 ;***** エンディングイベント *****
 *ENDING_EVENT
 
+pos 0,160
 celput 35
 
 stop
@@ -756,7 +815,22 @@ station_now_flag = 0
 gosub *ENEMY_INIT		;敵座標の初期化(-1)
 gosub *RESIDENT_INIT	;住人の初期化(-1)
 gosub *MAP_DATA_INIT	;マップデータ初期化
-gosub *MAP_INIT			;リバプールマップの初期化
+gosub *MAP_INIT			;エジンバラマップの初期化
+
+goto *ZUNKO_PUT
+
+;***** センダイへ移動 *****
+*GO_SENDAI
+
+clrobj
+map_id = 6
+game_turn++
+station_now_flag = 0
+
+gosub *ENEMY_INIT		;敵座標の初期化(-1)
+gosub *RESIDENT_INIT	;住人の初期化(-1)
+gosub *MAP_DATA_INIT	;マップデータ初期化
+gosub *MAP_INIT			;センダイマップの初期化
 
 goto *ZUNKO_PUT
 
