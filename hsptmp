@@ -123,6 +123,16 @@ mmload "dat\\tam-g08.mid",3,1		;グラスゴー
 mmload "dat\\tamsu06.mid",4,1		;リバプール
 mmload "dat\\tamsu08.mid",5,1		;エジンバラ
 mmload "dat\\tam-y08.mid",6,1		;センダイ
+;ずん子ボイス読み込み
+mmload "dat\\zvoice01.wav",11,0
+mmload "dat\\zvoice02.wav",12,0
+mmload "dat\\zvoice03.wav",13,0
+mmload "dat\\zvoice04.wav",14,0
+mmload "dat\\zvoice11.wav",21,0		;ずんっ！
+mmload "dat\\zvoice21.wav",31,0
+mmload "dat\\zvoice22.wav",32,0
+mmload "dat\\zvoice23.wav",33,0
+mmload "dat\\zvoice24.wav",34,0
 
 ;***** タイトル画面 *****
 
@@ -131,6 +141,15 @@ celput 41
 
 pos 570,430
 button "START",*GAME_MAIN
+
+;ずん子トーク
+mmplay 11
+wait 300+200
+mmplay 12
+wait 700+200
+mmplay 13
+wait 500+200
+mmplay 14
 
 stop
 
@@ -556,24 +575,28 @@ return
 
 ;***** ずん子の座標を東に+1 *****
 *ZUNKO_MOVE_EAST
+;mmplay 21
 clrobj
 zun_x++
 goto *ENEMY_TURN
 
 ;***** ずん子の座標を西に+1 *****
 *ZUNKO_MOVE_WEST
+;mmplay 21
 clrobj
 zun_x--
 goto *ENEMY_TURN
 
 ;***** ずん子の座標を北に+1 *****
 *ZUNKO_MOVE_NORTH
+;mmplay 21
 clrobj
 zun_y--
 goto *ENEMY_TURN
 
 ;***** ずん子の座標を南に+1 *****
 *ZUNKO_MOVE_SOUTH
+;mmplay 21
 clrobj
 zun_y++
 goto *ENEMY_TURN
@@ -905,5 +928,15 @@ font "ＭＳ ゴシック",28,1
 pos 160,220
 color 255,0,0
 mes "***** GAME OVER *****"
+
+mmstop
+;ずん子トーク
+mmplay 31
+wait 100+200
+mmplay 32
+wait 600+200
+mmplay 33
+wait 1300+200
+mmplay 34
 
 stop
