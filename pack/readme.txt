@@ -1,12 +1,14 @@
 ===============================================================================
-yƒ\ƒtƒg–¼@@zƒVƒƒ[ƒzƒbƒNEƒ[ƒ€ƒY ”ŒŽÝ—ßó˜A‘±Ž–Œ Ver0.555
+yƒ\ƒtƒg–¼@@zƒVƒƒ[ƒzƒbƒNEƒ[ƒ€ƒY ”ŒŽÝ—ßó˜A‘±Ž–Œ
+yƒo[ƒWƒ‡ƒ“@zVer0.56
 yƒtƒ@ƒCƒ‹–¼@zlomes2.zip
 yìŽÒ–¼@@@zÄ“¡ƒŠƒCƒ`
 y“®ìŠm”F‹@ŽízDELL OPTIPLEX 780(Windows XP)
 		SONY VAIO VPCYA2AJ(Windows 7)
 y•K—vŠÂ‹«@@zOS:Windows 98/Me/2000/XP/Vista/7
+		DirectX9.0bˆÈã(¦Ver.0.56‚æ‚è•K—v‚É‚È‚è‚Ü‚µ‚½)
 @@@@@@@@‰ð‘œ“xF640x480ˆÈã
-@@@@@@@@‚»‚Ì‘¼FMIDI‚ªÄ¶‚Å‚«‚éƒTƒEƒ“ƒhŠÂ‹«
+@@@@@@@@‚»‚Ì‘¼Fwave,ogg‚ªÄ¶‚Å‚«‚éƒTƒEƒ“ƒhŠÂ‹«
 yƒ\ƒtƒgŽí•Ê@zƒtƒŠ[ƒEƒFƒA
 y“]ÚðŒ@@z”ñ‰c—˜–Ú“I‚ÌŒÂl”z•z‚ÍŽ©—RB
 @@@@@@@@‚»‚êˆÈŠO‚ÍŒÂX‚É‘Î‰ž‚µ‚Ü‚·‚Ì‚Å‚²ˆê•ñ‚­‚¾‚³‚¢B
@@ -67,6 +69,7 @@ zip‰ð“€ƒc[ƒ‹“™‚Å‰ð“€‚µ‚Ä¶¬‚³‚ê‚½ƒtƒHƒ‹ƒ_(lomes2)‚ðŽg—p‚·‚éPC‚ÌD‚«‚ÈêŠ‚É’u‚
 
 yXV—š—ðz
 
-2013.04.06@Ver0.555i‚Æ‚è‚ ‚¦‚¸ŒöŠJ‚µ‚¿‚á‚¤”Åj
+2013.04.07@Ver0.56	iƒTƒEƒ“ƒhÄ¶‚Éhmm.dll‚ð“±“üA‚¸‚ñŽqƒ{ƒCƒXŽÀ‘•j
+2013.04.06@Ver0.555	i‚Æ‚è‚ ‚¦‚¸ŒöŠJ‚µ‚¿‚á‚¤”Åj
 
 ===============================================================================

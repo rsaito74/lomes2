@@ -73,7 +73,7 @@ station_now_flag = 0	;今駅にいるよフラグ
 
 victoria_enevt_flag = 0		;ヴィクトリアイベントフラグ
 
-title "シャーホック・ロームズ２伯爵令状連続事件 Ver.0.555"
+title "シャーホック・ロームズ２伯爵令状連続事件 Ver.0.56"
 
 ;DirectDound初期化
 hmminit 1
