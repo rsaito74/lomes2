@@ -1,4 +1,6 @@
 ;***** シャーホック・ロームズ2伯爵令嬢連続事件 *****
+#include "hmm.as"
+
 #pack "mapbg.jpg"
 #pack "zunko_unit.bmp"
 #pack "enemy.bmp"
@@ -73,6 +75,12 @@ victoria_enevt_flag = 0		;ヴィクトリアイベントフラグ
 
 title "シャーホック・ロームズ２伯爵令状連続事件 Ver.0.555"
 
+;DirectDound初期化
+hmminit 1
+;音楽ファイル読み込みに時間がかかる対処
+cls 4
+color 0,255,0 : pos 260,230 : mes "Now Loading..."
+
 celload "mapbg.jpg",1
 celload "zunko_unit.bmp",2
 celload "enemy.bmp",3
@@ -117,22 +125,38 @@ celload "tk_map6_72.jpg",72		;仙台・女性
 celload "tk_map6_73.jpg",73		;仙台・女性
 
 ;BGMの読み込み
-mmload "dat\\tamau01.mid",1,1		;ロンドン
-mmload "dat\\tam-n03.mid",2,1		;バーミンガム
-mmload "dat\\tam-g08.mid",3,1		;グラスゴー
-mmload "dat\\tamsu06.mid",4,1		;リバプール
-mmload "dat\\tamsu08.mid",5,1		;エジンバラ
-mmload "dat\\tam-y08.mid",6,1		;センダイ
+;mmload "dat\\tamau01.mid",1,1		;ロンドン
+;mmload "dat\\tam-n03.mid",2,1		;バーミンガム
+;mmload "dat\\tam-g08.mid",3,1		;グラスゴー
+;mmload "dat\\tamsu06.mid",4,1		;リバプール
+;mmload "dat\\tamsu08.mid",5,1		;エジンバラ
+;mmload "dat\\tam-y08.mid",6,1		;センダイ
+dsoggloadfname "dat\\bgm01n12.ogg",1		;ロンドン（tam-n12loop.ogg）
+dsoggloadfname "dat\\bgm02n13.ogg",2		;バーミンガム（tam-n13loop.ogg）
+dsoggloadfname "dat\\bgm03n09.ogg",3		;グラスゴー（tam-n09loop.ogg）
+dsoggloadfname "dat\\bgm04n06.ogg",4		;リバプール（tam-n06loop.ogg）
+dsoggloadfname "dat\\bgm05c04.ogg",5		;エジンバラ（Dilemma_loop.ogg）
+dsoggloadfname "dat\\bgm06g02.ogg",6		;センダイ（tamhe08_loop.ogg）
+
 ;ずん子ボイス読み込み
-mmload "dat\\zvoice01.wav",11,0
-mmload "dat\\zvoice02.wav",12,0
-mmload "dat\\zvoice03.wav",13,0
-mmload "dat\\zvoice04.wav",14,0
-mmload "dat\\zvoice11.wav",21,0		;ずんっ！
-mmload "dat\\zvoice21.wav",31,0
-mmload "dat\\zvoice22.wav",32,0
-mmload "dat\\zvoice23.wav",33,0
-mmload "dat\\zvoice24.wav",34,0
+;mmload "dat\\zvoice01.wav",11,0
+;mmload "dat\\zvoice02.wav",12,0
+;mmload "dat\\zvoice03.wav",13,0
+;mmload "dat\\zvoice04.wav",14,0
+;mmload "dat\\zvoice11.wav",21,0		;ずんっ！
+;mmload "dat\\zvoice21.wav",31,0
+;mmload "dat\\zvoice22.wav",32,0
+;mmload "dat\\zvoice23.wav",33,0
+;mmload "dat\\zvoice24.wav",34,0
+dsloadfname "dat\\zvoice01.wav",11
+dsloadfname "dat\\zvoice02.wav",12
+dsloadfname "dat\\zvoice03.wav",13
+dsloadfname "dat\\zvoice04.wav",14
+dsloadfname "dat\\zvoice11.wav",21		;ずんっ！
+dsloadfname "dat\\zvoice21.wav",31
+dsloadfname "dat\\zvoice22.wav",32
+dsloadfname "dat\\zvoice23.wav",33
+dsloadfname "dat\\zvoice24.wav",34
 
 ;***** タイトル画面 *****
 
@@ -143,13 +167,13 @@ pos 570,430
 button "START",*GAME_MAIN
 
 ;ずん子トーク
-mmplay 11
+dsplay 11,0
 wait 300+200
-mmplay 12
+dsplay 12,0
 wait 700+200
-mmplay 13
+dsplay 13,0
 wait 500+200
-mmplay 14
+dsplay 14,0
 
 stop
 
@@ -301,9 +325,9 @@ return
 
 ;***** マップの初期化 *****
 *MAP_INIT
-;BGM再生	
-mmplay map_id
-	
+;BGM再生（第2引数=1:ループする）
+dsplay map_id,1
+
 ;ロンドン
 if map_id = 1 {
 	if event_flag(4) = 0 {
@@ -575,28 +599,28 @@ return
 
 ;***** ずん子の座標を東に+1 *****
 *ZUNKO_MOVE_EAST
-;mmplay 21
+dsplay 21,0		;ずんっ！
 clrobj
 zun_x++
 goto *ENEMY_TURN
 
 ;***** ずん子の座標を西に+1 *****
 *ZUNKO_MOVE_WEST
-;mmplay 21
+dsplay 21,0		;ずんっ！
 clrobj
 zun_x--
 goto *ENEMY_TURN
 
 ;***** ずん子の座標を北に+1 *****
 *ZUNKO_MOVE_NORTH
-;mmplay 21
+dsplay 21,0		;ずんっ！
 clrobj
 zun_y--
 goto *ENEMY_TURN
 
 ;***** ずん子の座標を南に+1 *****
 *ZUNKO_MOVE_SOUTH
-;mmplay 21
+dsplay 21,0		;ずんっ！
 clrobj
 zun_y++
 goto *ENEMY_TURN
@@ -638,7 +662,7 @@ goto *ZUNKO_PUT
 
 ;***** 街の人の接触（会話） *****
 *RESIDENT_TOUCH
-mmstop		;BGM停止
+dsstop map_id		;BGM停止
 clrobj
 redraw 0
 cls 4
@@ -691,7 +715,7 @@ stop
 *END_TALK_RESIDENT
 clrobj
 cls 4
-mmplay map_id	;BGM再開
+dsplay map_id,1		;BGM再開（ループ有）
 
 redraw 0
 color 0,0,0
@@ -721,7 +745,7 @@ goto *ZUNKO_MOVE
 
 ;***** イベント接触（おもにアイテムゲット） *****
 *EVENT_TOUCH
-mmstop		;BGM停止
+dsstop map_id		;BGM停止
 clrobj
 redraw 0
 cls 4
@@ -813,6 +837,7 @@ return
 ;***** ロンドンへ移動 *****
 *GO_LONDON
 
+dsstop map_id
 clrobj
 map_id = 1
 game_turn++
@@ -828,6 +853,7 @@ goto *ZUNKO_PUT
 ;***** バーミンガムへ移動 *****
 *GO_BIRMINGHAM
 
+dsstop map_id
 clrobj
 map_id = 2
 game_turn++
@@ -843,6 +869,7 @@ goto *ZUNKO_PUT
 ;***** グラスゴーへ移動 *****
 *GO_GLASGOW
 
+dsstop map_id
 clrobj
 map_id = 3
 game_turn++
@@ -858,6 +885,7 @@ goto *ZUNKO_PUT
 ;***** リバプールへ移動 *****
 *GO_LIVERPOOL
 
+dsstop map_id
 clrobj
 map_id = 4
 game_turn++
@@ -873,6 +901,7 @@ goto *ZUNKO_PUT
 ;***** エジンバラへ移動 *****
 *GO_EDINBURGH
 
+dsstop map_id
 clrobj
 map_id = 5
 game_turn++
@@ -888,6 +917,7 @@ goto *ZUNKO_PUT
 ;***** センダイへ移動 *****
 *GO_SENDAI
 
+dsstop map_id
 clrobj
 map_id = 6
 game_turn++
@@ -929,14 +959,14 @@ pos 160,220
 color 255,0,0
 mes "***** GAME OVER *****"
 
-mmstop
+dsstop map_id
 ;ずん子トーク
-mmplay 31
+dsplay 31,0
 wait 100+200
-mmplay 32
+dsplay 32,0
 wait 600+200
-mmplay 33
+dsplay 33,0
 wait 1300+200
-mmplay 34
+dsplay 34,0
 
 stop
